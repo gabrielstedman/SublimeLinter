@@ -23,8 +23,11 @@ if False:
         'error_type': str,
         'code': Optional[str],
         'msg': str,
+        'filename': str,
+        'uid': str,
+        'priority': int,
         'panel_line': Tuple[int, int]
-    })
+    }, total=False)
 
 
 api_ready = False

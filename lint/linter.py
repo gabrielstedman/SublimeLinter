@@ -15,7 +15,7 @@ from .const import WARNING, ERROR
 
 MYPY = False
 if MYPY:
-    from typing import Any, Dict, List, Match, Optional, Tuple, Union
+    from typing import Any, Dict, List, Iterable, Match, Optional, Tuple, Union
 
 
 logger = logging.getLogger(__name__)
@@ -547,7 +547,7 @@ class Linter(metaclass=LinterMeta):
     executable_path = None
 
     # A regex pattern used to extract information from the executable's output.
-    regex = ''
+    regex = None
 
     # Set to True if the linter outputs multiline error messages. When True,
     # regex will be created with the re.MULTILINE flag. Do NOT rely on setting
@@ -1060,6 +1060,7 @@ class Linter(metaclass=LinterMeta):
                 yield self.process_match(m, virtual_view)
 
     def find_errors(self, output):
+        # type: (str) -> Iterable[LintMatch]
         """
         Match the linter's regex against the linter output with this generator.
 
@@ -1067,6 +1068,15 @@ class Linter(metaclass=LinterMeta):
         match of self.regex. If False, split_match is called for each line
         in output.
         """
+        if not self.regex:
+            logger.error(
+                "{}: 'self.regex' is not defined.  If this is intentional "
+                "because e.g. the linter reports JSON, implement your own "
+                "'def find_errors(self, output)'."
+                .format(self.name)
+            )
+            raise PermanentError("regex not defined")
+
         if self.multiline:
             matches = list(self.regex.finditer(output))
             if not matches:

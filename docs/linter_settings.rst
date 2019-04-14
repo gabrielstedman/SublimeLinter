@@ -126,6 +126,11 @@ Lint Mode determines when the linter is run.
 - `manual`: only when calling the Lint This View command
 - `save`: only when a file is saved
 
+shell
+---------
+Shell prepends a command to all linter runs.
+For example, by setting shell to 'wsl' in Windows all linters will run in Bash for Windows.
+
 
 python
 ------

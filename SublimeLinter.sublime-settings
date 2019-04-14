@@ -55,6 +55,9 @@
     // - save: only when a file is saved
     "lint_mode": "background",
 
+    // Runs linter inside a custom shell
+    "shell": "",
+
     // Linter specific settings.
     // More info: http://www.sublimelinter.com/en/stable/linter_settings.html
     // Linter specific settings except for 'styles' can also be changed

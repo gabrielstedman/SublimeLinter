@@ -31,6 +31,9 @@
             "type":"string",
             "enum":["background", "load_save", "manual", "save"]
         },
+        "shell":{
+            "type":"string"
+        },
         "linters":{
             "type":"object",
             "additionalProperties":{

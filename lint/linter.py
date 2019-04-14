@@ -735,8 +735,27 @@ class Linter(metaclass=LinterMeta):
         The delegates to `insert_args` and returns whatever it returns.
 
         """
+        shell = persist.settings.get('shell')
+        if not shell:
+            have_path, path = self.context_sensitive_executable_path(cmd)
+        else:
+            logger.info("Shell set to %s", shell)
+            shell_cmd = shlex.split(shell)
+            # Some linters prepend wsl or bash so ingore shell if they do.
+            if any(re.findall(r'wsl|bash', cmd[0], re.IGNORECASE)) and any(re.findall(r'wsl|bash', shell_cmd[0], re.IGNORECASE)):
+                have_path, path = self.context_sensitive_executable_path(cmd)
+            else:
+                # Honour executable setting
+                settings = self.get_view_settings()
+                executable = settings.get('executable', None)
+                if executable:
+                    # Blindly set the executable as it may be valid with a custom shell
+                    cmd[0] = executable
+                # Prepend shell cmd line
+                cmd = shell_cmd + cmd
+                have_path, path = False, None
+
         which = cmd[0]
-        have_path, path = self.context_sensitive_executable_path(cmd)
 
         if have_path:
             # happy path?
